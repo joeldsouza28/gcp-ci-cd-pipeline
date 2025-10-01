@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout Repo
-      uses: github.com/checkout@v3
+      uses: actions/checkout@v3
 
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
