@@ -6,5 +6,4 @@ app = FastAPI()
 
 @app.get("/")
 def index():
-    return f"Hello from dockerized fastapi {socket.gethostname()}"
-
+    return f"Hello from dockerized fastapi {socket.gethostname()} here"
