@@ -36,7 +36,7 @@ jobs:
       working-directory: terraform
     
     - name: Terraform Create Registry
-      run: terraform apply -target=google_artifact_registry_repository.fastapi_repo
+      run: terraform apply -target=google_artifact_registry_repository.fastapi_repo -auto-approve
       working-directory: terraform
       env:
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}
