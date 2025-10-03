@@ -17,11 +17,12 @@ resource "google_cloud_run_service" "fastapi" {
   template {
     spec {
       containers {
-        image = "docker.io/<username>/fastapi-cicd:latest"
+        image = "${var.region}-docker.pkg.dev/${var.project_id}/fastapi-cicd/fastapi-cicd:latest"
         ports {
           container_port = 8000
         }
       }
+
     }
   }
 
@@ -30,6 +31,16 @@ resource "google_cloud_run_service" "fastapi" {
     latest_revision = true
   }
 }
+
+resource "google_cloud_run_service_iam_member" "public" {
+  location = var.region
+  project  = var.project_id
+  service  = google_cloud_run_service.fastapi.name
+
+  role   = "roles/run.invoker"
+  member = "allUsers"
+}
+
 
 
 resource "google_artifact_registry_repository" "fastapi_repo" {
