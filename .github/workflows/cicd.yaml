@@ -74,7 +74,7 @@ jobs:
         fi
 
         gcloud pubsub topics publish ci-cd-events \
-          --message="{\"status\":\"$STATUS\",\"commit\":\"${GITHUB_SHA}\",\"repo\":\"${GITHUB_REPOSITORY}\", \"run_id\": \"\${GITHUB_RUN_ID}"}" \
+          --message="{\"status\":\"$STATUS\",\"commit\":\"${GITHUB_SHA}\",\"repo\":\"${GITHUB_REPOSITORY}\", \"run_id\": \"${GITHUB_RUN_ID}\"}" \
           --project=${{ secrets.GCP_PROJECT }}
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
