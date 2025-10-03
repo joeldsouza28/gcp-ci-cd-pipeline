@@ -64,4 +64,12 @@ jobs:
       env:
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}
         TF_VAR_region: us-central1
-    
+
+    - name: Publish CI/CD Event to Pub/Sub
+      run: |
+        gcloud pubsub topics publish ci-cd-events \
+          --message="{\"event\":\"build_success\",\"commit\":\"${GITHUB_SHA}\"}" \
+          --project=${{ secrets.GCP_PROJECT }}
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+        
