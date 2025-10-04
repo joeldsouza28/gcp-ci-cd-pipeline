@@ -27,28 +27,6 @@ jobs:
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-    - name: Terraform Init
-      run: terraform init
-      working-directory: terraform
-
-    - name: Terraform Validate
-      run: terraform validate
-      working-directory: terraform
-    
-    - name: Terraform Create Registry
-      run: terraform apply -target=google_artifact_registry_repository.fastapi_repo -auto-approve
-      working-directory: terraform
-      env:
-        TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}
-        TF_VAR_region: us-central1
-
-    - name: Terraform Plan
-      run: terraform plan -out=tfplan
-      working-directory: terraform
-      env:
-        TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}
-        TF_VAR_region: us-central1
-
     - name: Build Docker image
       run: |
         docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest .
@@ -56,14 +34,6 @@ jobs:
     - name: Push Docker image to Artifact Registry
       run: |
         docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest
-
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      run: terraform apply -auto-approve tfplan
-      working-directory: terraform
-      env:
-        TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}
-        TF_VAR_region: us-central1
 
     # - name: Publish CI/CD Event to Pub/Sub
     #   if: always()
