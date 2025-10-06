@@ -8,7 +8,7 @@ provider "google" {
 }
 
 
-resource "google_cloud_run_service" "default" {
+resource "google_cloud_run_service" "fastapi_service" {
   name     = "fastapi-service"
   location = var.region
 
@@ -27,6 +27,14 @@ resource "google_cloud_run_service" "default" {
 
   depends_on = [google_artifact_registry_repository.fastapi_repo]
 }
+
+resource "google_cloud_run_service_iam_member" "public_invoker" {
+  service  = google_cloud_run_service.fastapi_service.name
+  location = google_cloud_run_service.fastapi_service.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
 
 
 resource "google_artifact_registry_repository" "fastapi_repo" {
