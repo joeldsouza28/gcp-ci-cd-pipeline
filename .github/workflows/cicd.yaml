@@ -74,11 +74,12 @@ jobs:
 
     - name: Deploy new revision
       run: |
-        gcloud run deploy my-cloudrun-service \
+        gcloud run deploy fastapi-service \
           --image "us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest" \
           --region us-central1 \
           --platform managed \
           --project ${{ secrets.GCP_PROJECT }}
+          --quiet
 
     # - name: Publish CI/CD Event to Pub/Sub
     #   if: always()
