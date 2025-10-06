@@ -32,7 +32,7 @@ resource "google_cloud_run_service" "default" {
 resource "google_artifact_registry_repository" "fastapi_repo" {
   provider      = google
   location      = var.region
-  repository_id = "fastapi-service"
+  repository_id = "fastapi-repo"
   description   = "Docker repo for FastAPI CI/CD app"
   format        = "DOCKER"
 }

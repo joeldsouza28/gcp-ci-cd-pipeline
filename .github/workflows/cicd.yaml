@@ -52,7 +52,7 @@ jobs:
     - name: Push Docker image to Artifact Registry
       if: steps.check_repo.outputs.exists == 'true'
       run: |
-          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest
+          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-repo/fastapi-repo:latest
 
     - name: Check Cloud Run service
       id: check_service
