@@ -75,7 +75,7 @@ jobs:
     - name: Deploy new revision
       run: |
         gcloud run deploy fastapi-service \
-          --image "us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest" \
+          --image "us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-repo/fastapi-repo:latest" \
           --region us-central1 \
           --platform managed \
           --project ${{ secrets.GCP_PROJECT }}
