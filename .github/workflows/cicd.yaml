@@ -29,11 +29,56 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest .
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-repo/fastapi-repo:latest .
+
+    - name: Check Artifact Registry repository
+      id: check_repo
+      run: |
+        REPO_NAME="fastapi-repo"
+        REGION="us-central1"
+        PROJECT_ID="${{ secrets.GCP_PROJECT }}"
+
+        if gcloud artifacts repositories describe "$REPO_NAME" \
+            --location="$REGION" \
+            --project="$PROJECT_ID" >/dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "✅ Artifact Registry exists"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "❌ Artifact Registry '$REPO_NAME' not found in $REGION"
+          exit 1
+        fi
 
     - name: Push Docker image to Artifact Registry
+      if: steps.check_repo.outputs.exists == 'true'
       run: |
-        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest
+          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest
+
+    - name: Check Cloud Run service
+      id: check_service
+      run: |
+        SERVICE_NAME="fastapi-service"
+        REGION="us-central1"
+        PROJECT_ID="${{ secrets.GCP_PROJECT }}"
+
+        if gcloud run services describe "$SERVICE_NAME" \
+            --region "$REGION" \
+            --project "$PROJECT_ID" >/dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "✅ Cloud Run service exists"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "❌ Cloud Run service '$SERVICE_NAME' not found in $REGION"
+          exit 1
+        fi
+
+    - name: Deploy new revision
+      run: |
+        gcloud run deploy my-cloudrun-service \
+          --image "us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-cicd/fastapi-cicd:latest" \
+          --region us-central1 \
+          --platform managed \
+          --project ${{ secrets.GCP_PROJECT }}
 
     # - name: Publish CI/CD Event to Pub/Sub
     #   if: always()
