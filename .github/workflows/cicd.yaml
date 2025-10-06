@@ -78,7 +78,8 @@ jobs:
           --image "us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/fastapi-repo/fastapi-repo:latest" \
           --region us-central1 \
           --platform managed \
-          --project ${{ secrets.GCP_PROJECT }}
+          --port 8000 \
+          --project ${{ secrets.GCP_PROJECT }} \
           --quiet
 
     # - name: Publish CI/CD Event to Pub/Sub
